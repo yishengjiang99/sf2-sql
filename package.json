@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "postInstall": "gcc index.js -o index.a.out",
+        "postInstall": "gcc index.js -o index.a.out"
 
     },
     "keywords": [],
