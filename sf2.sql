@@ -13,9 +13,9 @@ create table pbag(
 	pmod_id smallint unsigned
 );
 
-create index pbg on pbag(pgen_id);
+create unique index pbag on pbag (id, pgen_id, pmod_id);
 
-create index pbm on pbag(pmod_id);
+create index pbg on pbag(pgen_id);
 
 create table pmod (
 	id int,
@@ -30,8 +30,9 @@ create table pmod (
 create table pgen(
 	id int,
 	operator smallint unsigned,
-	lo smallint,
-	hi smallint,
+	lo smallint unsigned,
+	hi smallint unsigned,
+	amount smallint,
 	index(id)
 );
 
@@ -60,8 +61,9 @@ create table imod(
 create table igen(
 	id int,
 	operator smallint unsigned,
-	lo smallint,
-	hi smallint
+	lo smallint unsigned,
+	hi smallint unsigned,
+	amount smallint
 );
 
 create table shdr(id int, name char(20), start int unsigned,end int unsigned,
@@ -73,13 +75,3 @@ pitchCorrection smallint,
 sampleLink mediumint unsigned,
 sampleType mediumint unsigned
 );
-
-alter table
-	pbag
-add
-	presetId smallint unsigned;
-
-alter table
-	pgen
-add
-	pbagId smallint unsigned;
