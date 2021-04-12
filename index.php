@@ -1,5 +1,9 @@
+
 <html>
-	<body>
+	<head><link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v3.0.1/dist/mini-dark.min.css">
+</head>
+	<body class='container'>
+
 <pre>
 <?php
 $one=fopen("php://output","wb");
