@@ -1,4 +1,13 @@
+<html>
+	<body>
+<pre>
 <?php
-$mysql = mysql_connect("localhost", "root", "");
-mysql_select_db("grepsf2");
-$res=mysql_query($mysql, "select now()");
+$one=fopen("php://output","wb");
+$file=popen("/var/www/html/sf2-sql/index2.c.out","r");
+while(fputs($one,fgets($file)));
+pclose($file);
+fclose($one);
+?>
+</pre>
+</body>
+</html>
