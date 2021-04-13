@@ -100,14 +100,13 @@ typedef struct
 	unsigned short operator;
 	genAmountType val;
 } igen;
+
 typedef struct
 {
 	char name[20];
-	uint32_t start,end,startloop,endloop,sampleRate;
-	uint8_t originalPitch;
-	char pitchCorrection;
-	short wSampleLink,sfSampleType;
-	unsigned short ibagNdx;
+	uint32_t start, end,startloop,endloop,sampleRate;
+	uint8_t originalPitch, pitchCorrection, v2,v3,v4,v5;
+
 } shdr;
 
 typedef struct
