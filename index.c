@@ -34,10 +34,6 @@ int main(int argc, char **argv)
 		if (pid > -1 && phdrs[i].pid != pid)
 			continue;
 
-		char sampleFileName[1024];
-		sprintf(sampleFileName, "sample_%s_%d.pcm", filename, pid);
-		FILE *samplePCM = fopen(sampleFileName, "wb+");
-
 		for (int j = phdrs[i].pbagNdx; j < lastbag; j++)
 		{
 			pbag *pg = pbags + j;
@@ -116,18 +112,15 @@ int main(int argc, char **argv)
 								lastSampId = ig->val.ranges.lo | (ig->val.ranges.hi << 8);
 
 								sample = (shdrcast *)(shdrs + lastSampId * 46);
-								fwrite(data + sample->start * 2, sizeof(short), (sample->end - sample->start), samplePCM);
-								fprintf(stdout, "\n%d, samp, %d, %d, %.20s, %u,%u,%u,%u,%u,%u",
-												phdrs[i].pid,
+
+								fprintf(stdout, "\n%d, samp, %d, %d, %u,%u,%u,%u,", phdrs[i].pid,
 												lastSampId,
 												instID,
-												sample->name,
-												sampOutOffset,
-												sample->end - sample->start + sampOutOffset,
-												sample->startloop - sample->start + sampOutOffset,
-												sample->endloop - sample->start + sampOutOffset,
-												sample->sampleRate,
-												sample->originalPitch);
+												sample->start, sample->end, sample->startloop, sample->endloop);
+
+								fprintf(stdout, "\n<a class='pcm' href='sample.php?file=%s&start=%d&end=%d'>%s</a>",
+												filename,
+												sample->start, sample->end, sample->name);
 							}
 						}
 					}
