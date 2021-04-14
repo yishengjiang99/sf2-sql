@@ -1,5 +1,5 @@
+#include <stdint.h>
 char *generator[60] = {"Gen_StartAddrOfs", "Gen_EndAddrOfs", "Gen_StartLoopAddrOfs", "Gen_EndLoopAddrOfs", "Gen_StartAddrCoarseOfs", "Gen_ModLFO2Pitch", "Gen_VibLFO2Pitch", "Gen_ModEnv2Pitch", "Gen_FilterFc", "Gen_FilterQ", "Gen_ModLFO2FilterFc", "Gen_ModEnv2FilterFc", "Gen_EndAddrCoarseOfs", "Gen_ModLFO2Vol", "Gen_Unused1", "Gen_ChorusSend", "Gen_ReverbSend", "Gen_Pan", "Gen_Unused2", "Gen_Unused3", "Gen_Unused4", "Gen_ModLFODelay", "Gen_ModLFOFreq", "Gen_VibLFODelay", "Gen_VibLFOFreq", "Gen_ModEnvDelay", "Gen_ModEnvAttack", "Gen_ModEnvHold", "Gen_ModEnvDecay", "Gen_ModEnvSustain", "Gen_ModEnvRelease", "Gen_Key2ModEnvHold", "Gen_Key2ModEnvDecay", "Gen_VolEnvDelay", "Gen_VolEnvAttack", "Gen_VolEnvHold", "Gen_VolEnvDecay", "Gen_VolEnvSustain", "Gen_VolEnvRelease", "Gen_Key2VolEnvHold", "Gen_Key2VolEnvDecay", "Gen_Instrument", "Gen_Reserved1", "Gen_KeyRange", "Gen_VelRange", "Gen_StartLoopAddrCoarseOfs", "Gen_Keynum", "Gen_Velocity", "Gen_Attenuation", "Gen_Reserved2", "Gen_EndLoopAddrCoarseOfs", "Gen_CoarseTune", "Gen_FineTune", "Gen_SampleId", "Gen_SampleModes", "Gen_Reserved3", "Gen_ScaleTune", "Gen_ExclusiveClass", "Gen_OverrideRootKey", "Gen_Dummy"};
-
 
 typedef uint8_t BYTE;
 typedef uint32_t DWORD; // uint32_t;
@@ -10,7 +10,7 @@ typedef struct
 } rangesType; //  Four-character code
 typedef struct
 {
-	FOURCC ckID;  //  A chunk ID identifies the type of data within the chunk.
+	FOURCC ckID;	//  A chunk ID identifies the type of data within the chunk.
 	DWORD ckSize; // The size of the chunk data in bytes, excluding any pad byte.
 	BYTE *ckDATA; // The actual data plus a pad byte if req'd to word align.
 } RIFFCHUNKS;
@@ -73,7 +73,7 @@ typedef struct
 typedef struct
 {
 	unsigned short operator;
-	genAmountType  val;
+	genAmountType val;
 } pgen_t;
 typedef struct
 {
@@ -96,18 +96,15 @@ typedef union
 } gen_val;
 
 typedef struct
-{
-	unsigned short operator;
-	genAmountType val;
-} igen;
+		pgen_t igen;
 
 typedef struct
 {
 	char name[20];
-	uint32_t start, end,startloop,endloop,sampleRate;
-	uint8_t originalPitch, pitchCorrection, v2,v3,v4,v5;
+	uint32_t start, end, startloop, endloop, sampleRate;
+	uint8_t originalPitch, pitchCorrection, v2, v3, v4, v5;
 
-} shdr;
+} shdrcast;
 
 typedef struct
 {
@@ -117,7 +114,7 @@ typedef struct
 typedef struct
 {
 	uint8_t lokey, hikey, lovel, hivel;
-	shdr *sampl;
+	shdrcast *sampl;
 	short attentuation, lpf_cutff, lpf_q;
 	float pitchAdjust;
 	envelope vol, lfomod;
