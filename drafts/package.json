@@ -1,0 +1,13 @@
+{
+    "name": "sf2-sql",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "postInstall": "gcc index.js -o index.a.out"
+
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

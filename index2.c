@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <sys/stat.h>
 #include "index.h"
 
 int main(int argc, char **argv)
@@ -11,14 +10,9 @@ int main(int argc, char **argv)
 
 	unsigned int size, size2L;
 
-	char *filename = argc > 1 ? argv[1] : "file.sf2";
-
-	char *dbname = argc > 2 ? argv[2] : "grepsf2";
+	char *filename = argc > 1 ? argv[1] : "SoundBlasterOld.sf2";
 
 	FILE *fd = fopen(filename, "r");
-	FILE *mysql, *debug, *rmysql;
-	debug = fopen("debug.sql", "w+");
-	mysql = popen("cat", "w");
 	header_t *header = (header_t *)malloc(sizeof(header_t));
 	header2_t *h2 = (header2_t *)malloc(sizeof(header2_t));
 	fread(header, sizeof(header_t), 1, fd);
@@ -26,7 +20,8 @@ int main(int argc, char **argv)
 	fread(h2, sizeof(header2_t), 1, fd);
 	printf("\n%.4s %u", h2->name, h2->size);
 	for (int i = 0; i < h2->size; i++)
-		putchar(fgetc(fd) & 0x7f);
+		fgetc(fd);
+	//putchar(fgetc(fd) & 0x7f);
 	//	fseek(fd, h2->size, SEEK_CUR);
 	fread(h2, sizeof(header2_t), 1, fd);
 	printf("\n%.4s %u", h2->name, h2->size);
@@ -162,16 +157,4 @@ int main(int argc, char **argv)
 		}
 	}
 	printf("\n");
-}
-
-static void safe_sql_str(FILE *file, int size, FILE *output)
-{
-	fputc('\'', output);
-	for (int ci = 0; ci < size; ci++)
-	{
-		int c = fgetc(file);
-		if (c == 20 || c >= 60 && c <= 122)
-			fputc(c, output);
-	}
-	fputc('\'', output);
 }
