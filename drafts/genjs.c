@@ -34,6 +34,14 @@ int main(int argc, char **argv)
 		if (phdrs[i].bankId != 0)
 			continue;
 
+		char sampleFileName[1024];
+		sprintf(sampleFileName, "info_%s_%d_%d.js", filename, phdrs[i].pid, phdrs[i].bankId);
+		obf = fopen(sampleFileName, "w");
+
+		fprintf(obf, "\n export function find_%d_%d_presets(key, velocity){ ", phdrs[i].pid, phdrs[i].bankId);
+
+		fprintf(obf, "\n \t const preset_%d_%d_zones =[];", phdrs[i].pid, phdrs[i].bankId);
+
 		for (int j = phdrs[i].pbagNdx; j < lastbag; j++)
 		{
 			int jsIndent = 0;
@@ -116,15 +124,16 @@ int main(int argc, char **argv)
 
 								shdrcast *sample = malloc(46);
 								sample = (shdrcast *)(shdrs + lastSampId * 46);
+								//		fwrite(data + sample->start * 2, sizeof(short), (sample->end - sample->start), samplePCM);
+								fprintf(obf, "\n\tizone.sampleID = %d;", lastSampId);
+								fprintf(obf, "\n\tizone.sample.start = %d;", sampOutOffset);
+								fprintf(obf, "\n\tizone.sample.startLoop = %d;", sample->startloop - sample->start + sampOutOffset);
+								fprintf(obf, "\n\tizone.sample.endLoop = %d;", sample->endloop - sample->start + sampOutOffset);
+								fprintf(obf, "\n\tizone.sample.end = %d;", sample->end - sample->start + sampOutOffset);
+								fprintf(obf, "\n\tizone.sample.sampleRate = %d;", sample->sampleRate);
+								fprintf(obf, "\n\tizone.sample.originalPitch = %d;", sample->originalPitch);
 
-								fprintf(stdout, "\n%d, samp, %d, %d, %u,%u,%u,%u,", phdrs[i].pid,
-												lastSampId,
-												instID,
-												sample->start, sample->end, sample->startloop, sample->endloop);
-
-								fprintf(stdout, "\n<a class='pcm' href='sample.php?file=%s&start=%d&end=%d'>%s</a>",
-												filename,
-												sample->start, sample->end, sample->name);
+								sampOutOffset += (sample->end - sample->start) * 2;
 							}
 						}
 						while (ijsindent-- > 0)

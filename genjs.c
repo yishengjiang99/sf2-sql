@@ -10,8 +10,7 @@
 
 void find(int pid, int bankId, int vel, int key);
 int main(int argc, char **argv)
-{
-	FILE *obf;
+{		FILE *obf ;
 	shdrcast *sample;
 
 	char *filename = argc > 1 ? argv[1] : "file.sf2";
@@ -31,13 +30,20 @@ int main(int argc, char **argv)
 		int instID = -1;
 		int lastSampId = -1;
 		int sampOutOffset = 0;
-		if (phdrs[i].bankId != 0)
-			continue;
+		if(phdrs[i].bankId!=0)continue;
+
+		char sampleFileName[1024];
+		sprintf(sampleFileName, "info_%s_%d_%d.js", filename, phdrs[i].pid,phdrs[i].bankId);
+		obf= fopen(sampleFileName,"w");
+
+		fprintf(obf,"\n export function find_%d_%d_presets(key, velocity){ ", phdrs[i].pid, phdrs[i].bankId);
+
+		fprintf(obf,"\n \t const preset_%d_%d_zones =[];", phdrs[i].pid, phdrs[i].bankId);
 
 		for (int j = phdrs[i].pbagNdx; j < lastbag; j++)
 		{
 			int jsIndent = 0;
-			fprintf(obf, "\n /* %d %d */\n const presetDefault =  new SFZone();", phdrs[i].pid, phdrs[i].bankId);
+	    fprintf(obf,"\n /* %d %d */\n const presetDefault =  new SFZone();", phdrs[i].pid, phdrs[i].bankId);
 			pbag *pg = pbags + j;
 			pgen_t *lastg = pgens + pg[j + 1].pgen_id;
 			int pgenId = pg->pgen_id;
@@ -55,11 +61,13 @@ int main(int argc, char **argv)
 				if (pge->operator== 44) // || pge->operator== 43)
 				{
 					jsIndent++;
-					fprintf(obf, "\nif(val>%d && vel < %d) { ", pge->val.ranges.lo, pge->val.ranges.hi);
+					fprintf(obf
+					, "\nif(val>%d && vel < %d) { ", pge->val.ranges.lo, pge->val.ranges.hi);
 				}
 				else if (pge->operator== 43) // || pge->operator== 43)
 				{
-					fprintf(obf, "\t if(key>%d && key < %d) { \n", pge->val.ranges.lo, pge->val.ranges.hi);
+					fprintf(obf
+					, "\t if(key>%d && key < %d) { \n", pge->val.ranges.lo, pge->val.ranges.hi);
 
 					if (key > -1 && (pge->val.ranges.lo > key || pge->val.ranges.hi < key))
 						break;
@@ -92,7 +100,8 @@ int main(int argc, char **argv)
 							{
 
 								ijsindent++;
-								fprintf(obf, "\n if(vel>%d && vel < %d) { \n", ig->val.ranges.lo, ig->val.ranges.hi);
+								fprintf(obf
+								, "\n if(vel>%d && vel < %d) { \n", ig->val.ranges.lo, ig->val.ranges.hi);
 								fprintf(obf
 								, "\n\t izone.apply(new SFGenerator(sf_gen_ids.%s,%d)); //%hu,%hu",
 									generator[ig->operator], ig->val.shAmount, ig->val.ranges.lo, ig->val.ranges.hi);
@@ -101,7 +110,8 @@ int main(int argc, char **argv)
 							{
 
 								ijsindent++;
-								fprintf(obf, "\nif(key>%d && key < %d) { \n", ig->val.ranges.lo, ig->val.ranges.hi);
+								fprintf(obf
+								, "\nif(key>%d && key < %d) { \n", ig->val.ranges.lo, ig->val.ranges.hi);
 							}
 							else
 							{
@@ -116,30 +126,45 @@ int main(int argc, char **argv)
 
 								shdrcast *sample = malloc(46);
 								sample = (shdrcast *)(shdrs + lastSampId * 46);
+								//		fwrite(data + sample->start * 2, sizeof(short), (sample->end - sample->start), samplePCM);
+								fprintf(obf
+								, "\n\tizone.sampleID = %d;", lastSampId);
+								fprintf(obf
+								, "\n\tizone.sample.start = %d;", sampOutOffset);
+								fprintf(obf
+								, "\n\tizone.sample.startLoop = %d;", sample->startloop - sample->start + sampOutOffset);
+								fprintf(obf
+								, "\n\tizone.sample.endLoop = %d;", sample->endloop - sample->start + sampOutOffset);
+								fprintf(obf
+								, "\n\tizone.sample.end = %d;", sample->end - sample->start + sampOutOffset);
+								fprintf(obf
+								, "\n\tizone.sample.sampleRate = %d;", sample->sampleRate);
+								fprintf(obf
+								, "\n\tizone.sample.originalPitch = %d;", sample->originalPitch);
 
-								fprintf(stdout, "\n%d, samp, %d, %d, %u,%u,%u,%u,", phdrs[i].pid,
-												lastSampId,
-												instID,
-												sample->start, sample->end, sample->startloop, sample->endloop);
-
-								fprintf(stdout, "\n<a class='pcm' href='sample.php?file=%s&start=%d&end=%d'>%s</a>",
-												filename,
-												sample->start, sample->end, sample->name);
+								sampOutOffset += (sample->end - sample->start) * 2;
 							}
 						}
 						while (ijsindent-- > 0)
-							fprintf(obf, "\n }");
+							fprintf(obf
+							, "\n }");
 					}
 				}
-				fprintf(obf, "\nfor (const g of Object.values(pzone.generators)) izone.apply(g, -1);\n");
-				fprintf(obf, "\n preset_%d_%d_zones.push(izone);", phdrs[i].pid, phdrs[i].bankId);
+			 fprintf(obf
+			 , "\nfor (const g of Object.values(pzone.generators)) izone.apply(g, -1);\n");
+				fprintf(obf
+				, "\n preset_%d_%d_zones.push(izone);", phdrs[i].pid, phdrs[i].bankId);
 				while (jsIndent-- > 0)
-					fprintf(obf, "\n }");
+					fprintf(obf
+					, "\n }");
 			}
+
 		}
-		fprintf(obf, "} /*end of %d %d */", phdrs[i].bankId, phdrs[i].pid);
+		fprintf(obf	, "} /*end of %d %d */", phdrs[i].bankId,phdrs[i].pid);
 		fclose(obf);
+
 	}
 
-	fprintf(obf, "\n");
+	fprintf(obf
+	, "\n");
 }
