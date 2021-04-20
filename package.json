@@ -1,13 +1,39 @@
 {
+  "_from": "sf2-sql",
+  "_id": "sf2-sql@1.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-4udhRkhFmFYOf94eSYSVIY9VkMsxM5Cp9vbezPPPxBuEpLf3pViheB8xdM7m9+5GWM8eCOubI0lHpnQ1tkjZAw==",
+  "_location": "/sf2-sql",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "sf2-sql",
     "name": "sf2-sql",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "postInstall": "gcc index.js -o index.a.out"
-
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC"
+    "escapedName": "sf2-sql",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/sf2-sql/-/sf2-sql-1.1.0.tgz",
+  "_shasum": "4cab2ac3cf31fa1e0272956f34c843c8be61752c",
+  "_spec": "sf2-sql",
+  "_where": "/Users/yisheng/Documents/GitHub/sf2-turbo-stream",
+  "author": "",
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.c",
+  "name": "sf2-sql",
+  "scripts": {
+    "build": "gcc index2.c -o indexpdta",
+    "postInstall": "gcc index2.c -o indexpdta"
+  },
+  "version": "1.1.0"
 }

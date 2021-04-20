@@ -1,0 +1,13 @@
+{
+  "name": "sf2-sql",
+  "version": "1.1.0",
+  "description": "",
+  "main": "index.c",
+  "scripts": {
+    "postInstall": "gcc index2.c -o indexpdta",
+    "build": "gcc index2.c -o indexpdta"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
